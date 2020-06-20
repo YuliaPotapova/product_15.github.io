@@ -1,6 +1,6 @@
 {
   "name": "product_15",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Проектная работа по теме: подготовка и деплой бэкенда",
   "main": "app.js",
   "scripts": {

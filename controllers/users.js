@@ -5,7 +5,7 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const User = require('../models/user');
 const NotFoundError = require('../errors/notFoundError');
-const InvalidReqError = require('../errors/invalidReqError');
+const ConflictError = require('../errors/conflictError');
 
 module.exports.getAllUsers = (req, res, next) => {
   User.find({})
@@ -24,9 +24,6 @@ module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-  if (!name.trim().length) {
-    throw new InvalidReqError('Имя пользователя не должно быть пустым или состоять из одних пробелов');
-  }
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
@@ -34,7 +31,7 @@ module.exports.createUser = (req, res, next) => {
     .then((user) => res.send({ data: user.omitPrivate() }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new InvalidReqError('Пользователь с таким e-mail уже зарегистрирован'));
+        next(new ConflictError('Пользователь с таким e-mail уже зарегистрирован'));
       } else {
         next(err);
       }
